@@ -88,14 +88,14 @@ def job():
     """Check the current Kaub level and alert each subscriber whose threshold is breached."""
     print("\n🔄 Running scheduled water-level check …")
 
-    current = get_current_level("Kaub")
+    # FIX: Correctly unpack the tuple returned by data_fetcher.py
+    level, timestamp = get_current_level("Kaub")
 
-    if "error" in current:
-        print(f"⚠  Could not fetch water level: {current['error']}")
+    if level is None:
+        print("⚠  Could not fetch water level. API might be down.")
         return
 
-    level = current["value"]
-    print(f"   Kaub level : {level:.0f} cm")
+    print(f"   Kaub level : {level:.0f} cm (As of {timestamp})")
 
     # --- Load subscriber list ---
     if not os.path.isfile(SUBSCRIBERS_FILE):
@@ -113,6 +113,7 @@ def job():
     print(f"   📋 {len(subscribers)} subscriber(s) loaded\n")
 
     for row in subscribers:
+        # Note: Ensure your subscribers.csv has the headers "email,threshold_cm"
         target_email = row["email"]
         user_threshold = float(row["threshold_cm"])
 
