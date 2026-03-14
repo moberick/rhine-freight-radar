@@ -1,0 +1,37 @@
+name: Daily Rhine Alert Engine
+
+# This tells GitHub WHEN to run the script
+on:
+  schedule:
+    # Runs at 07:00 UTC every day
+    - cron: '0 7 * * *'
+  # This allows you to click a button and run it manually for testing!
+  workflow_dispatch: 
+
+jobs:
+  run-alert-engine:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Pulls your code from the repository
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # 2. Sets up Python
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      # 3. Installs your requirements
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      # 4. Runs your script using the hidden Secrets
+      - name: Run Notifier
+        env:
+          GMAIL_USER: ${{ secrets.GMAIL_USER }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+        run: python notifier.py
