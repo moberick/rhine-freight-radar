@@ -1,0 +1,14 @@
+# Sensitive / local-only
+notifier.py
+subscribers.csv
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+venv/
+.venv/
+*.egg-info/
+
+# OS
+.DS_Store
