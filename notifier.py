@@ -134,12 +134,6 @@ def job():
 
 
 # ---------------------------------------------------------------------------
-# Scheduler setup
-# ---------------------------------------------------------------------------
-
-schedule.every().day.at("07:00").do(job)
-
-# ---------------------------------------------------------------------------
 # Entrypoint
 # ---------------------------------------------------------------------------
 
@@ -150,12 +144,4 @@ if __name__ == "__main__":
     print("=" * 50)
     job()
 
-    # Then keep the scheduler alive
-    print("\n⏰ Scheduler active – next run at 07:00 daily.")
-    print("   Press Ctrl+C to stop.\n")
-    try:
-        while True:
-            schedule.run_pending()
-            time.sleep(60)
-    except KeyboardInterrupt:
-        print("\n🛑 Scheduler stopped.")
+
