@@ -69,7 +69,7 @@ def send_alert_email(target_email: str, current_level: float, surcharge_per_ton:
     msg.attach(MIMEText(body, "plain"))
 
     try:
-        with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:
+        with smtplib.SMTP(SMTP_SERVER, SMTP_PORT, timeout=15) as server:
             server.starttls()
             server.login(gmail_user, gmail_pass)
             server.sendmail(gmail_user, target_email, msg.as_string())
@@ -88,12 +88,14 @@ def job():
     """Check the current Kaub level and alert each subscriber whose threshold is breached."""
     print("\n🔄 Running scheduled water-level check …")
 
-    # FIX: Correctly unpack the tuple returned by data_fetcher.py
-    level, timestamp = get_current_level("Kaub")
+    current_data = get_current_level("Kaub")
 
-    if level is None:
-        print("⚠  Could not fetch water level. API might be down.")
+    if "error" in current_data:
+        print(f"⚠  Could not fetch water level: {current_data['error']}")
         return
+
+    level = current_data["value"]
+    timestamp = current_data["timestamp"]
 
     print(f"   Kaub level : {level:.0f} cm (As of {timestamp})")
 
