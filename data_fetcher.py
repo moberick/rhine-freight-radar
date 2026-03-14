@@ -50,7 +50,8 @@ def get_current_level(station_name: str = "Kaub") -> dict:
     try:
         uuid = _station_uuid(station_name)
         url = f"{BASE_URL}/stations/{uuid}.json?includeTimeseries=true&includeCurrentMeasurement=true"
-        resp = requests.get(url, timeout=REQUEST_TIMEOUT)
+        headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'}
+        resp = requests.get(url, headers=headers, timeout=REQUEST_TIMEOUT)
         resp.raise_for_status()
         data = resp.json()
 
